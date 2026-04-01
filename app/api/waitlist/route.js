@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
 
-// MVP: Log waitlist signups to console (visible in Vercel logs)
-// TODO: Connect to database (Supabase, Vercel KV, or Resend) for persistence
+export const dynamic = 'force-dynamic'
+
 export async function POST(request) {
   try {
     const { email } = await request.json()
@@ -13,28 +14,46 @@ export async function POST(request) {
       )
     }
 
-    // Log to Vercel server logs for now
-    console.log(`[WAITLIST] ${new Date().toISOString()} — ${email}`)
+    const cleanEmail = email.toLowerCase().trim()
 
-    // TODO: Uncomment one of these integrations:
+    // If Supabase is configured, use it
+    if (supabase) {
+      // Check for duplicate
+      const { data: existing } = await supabase
+        .from('waitlist')
+        .select('email')
+        .eq('email', cleanEmail)
+        .single()
 
-    // Option 1: Resend (email marketing)
-    // await fetch('https://api.resend.com/audiences/{audience_id}/contacts', {
-    //   method: 'POST',
-    //   headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email }),
-    // })
+      if (existing) {
+        return NextResponse.json(
+          { error: "You're already on the list!" },
+          { status: 409 }
+        )
+      }
 
-    // Option 2: Supabase
-    // import { createClient } from '@supabase/supabase-js'
-    // const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY)
-    // await supabase.from('waitlist').insert({ email, created_at: new Date().toISOString() })
+      // Insert new signup
+      const { error } = await supabase
+        .from('waitlist')
+        .insert({
+          email: cleanEmail,
+          source: 'landing_page',
+          created_at: new Date().toISOString(),
+        })
 
-    // Option 3: Vercel KV
-    // import { kv } from '@vercel/kv'
-    // await kv.sadd('waitlist', email)
+      if (error) {
+        console.error('[WAITLIST SUPABASE ERROR]', error)
+        return NextResponse.json(
+          { error: 'Something went wrong. Please try again.' },
+          { status: 500 }
+        )
+      }
+    }
 
+    // Always log to console as backup
+    console.log(`[WAITLIST] ${new Date().toISOString()} — ${cleanEmail}`)
     return NextResponse.json({ success: true })
+
   } catch (error) {
     console.error('[WAITLIST ERROR]', error)
     return NextResponse.json(
