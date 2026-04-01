@@ -1,19 +1,19 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'Failsafe — Your Digital Life Deserves a Backup Plan',
-  description: 'Failsafe maps every service tied to your identity, shows you the blast radius of a platform ban, and backs up what matters — so no single company can shut down your life.',
+  title: 'Failsafe — Identity Resilience for the Agent Era',
+  description: 'Monitor every credential your agents and identity depend on. Map the blast radius. Auto-failover when tokens break. Your agents and your digital life — always on.',
   openGraph: {
-    title: 'Failsafe — Your Digital Life Deserves a Backup Plan',
-    description: 'Map your digital dependencies. See your blast radius. Back up what matters.',
+    title: 'Failsafe — Identity Resilience for the Agent Era',
+    description: 'One token fails. Your entire stack goes dark. Failsafe monitors credentials, maps dependencies, and auto-recovers — for agents and humans.',
     url: 'https://failsafe.world',
     siteName: 'Failsafe',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Failsafe — Your Digital Life Deserves a Backup Plan',
-    description: 'Map your digital dependencies. See your blast radius. Back up what matters.',
+    title: 'Failsafe — Identity Resilience for the Agent Era',
+    description: 'One token fails. Your entire stack goes dark. Failsafe monitors credentials, maps dependencies, and auto-recovers.',
   },
 }
 

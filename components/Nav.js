@@ -10,6 +10,9 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const textColor = scrolled ? 'var(--text-soft)' : 'rgba(255,255,255,0.7)'
+  const logoColor = scrolled ? 'var(--primary)' : '#fff'
+
   return (
     <nav style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
@@ -40,14 +43,14 @@ export default function Nav() {
             <rect width="32" height="32" rx="8" fill="url(#navBg)"/>
             <text x="16" y="25" textAnchor="middle" fontFamily="Georgia, 'Times New Roman', serif" fontSize="27" fontWeight="700" fill="url(#navText)">S</text>
           </svg>
-          <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--primary)', letterSpacing: '-0.3px' }}>
+          <span style={{ fontSize: 18, fontWeight: 700, color: logoColor, letterSpacing: '-0.3px', transition: 'color 0.3s' }}>
             Failsafe
           </span>
         </div>
         <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
-          <a href="#features" style={{ fontSize: 14, color: 'var(--text-soft)', fontWeight: 500 }}>Features</a>
-          <a href="#agents" style={{ fontSize: 14, color: 'var(--text-soft)', fontWeight: 500 }}>For Agents</a>
-          <a href="#how" style={{ fontSize: 14, color: 'var(--text-soft)', fontWeight: 500 }}>How It Works</a>
+          <a href="#features" style={{ fontSize: 14, color: textColor, fontWeight: 500, transition: 'color 0.3s' }}>Features</a>
+          <a href="#agents" style={{ fontSize: 14, color: textColor, fontWeight: 500, transition: 'color 0.3s' }}>For Agents</a>
+          <a href="#how" style={{ fontSize: 14, color: textColor, fontWeight: 500, transition: 'color 0.3s' }}>How It Works</a>
           <a href="#waitlist" style={{
             fontSize: 13, fontWeight: 600, color: '#fff',
             background: 'var(--accent)', padding: '8px 18px',
