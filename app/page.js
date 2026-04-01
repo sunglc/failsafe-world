@@ -7,6 +7,7 @@ import SocialProof from '@/components/SocialProof'
 import Features from '@/components/Features'
 import HowItWorks from '@/components/HowItWorks'
 import RiskScore from '@/components/RiskScore'
+import AgentSection from '@/components/AgentSection'
 import OriginStory from '@/components/OriginStory'
 import FinalCTA from '@/components/FinalCTA'
 import Footer from '@/components/Footer'
@@ -20,6 +21,7 @@ export default function Home() {
       <Features />
       <HowItWorks />
       <RiskScore />
+      <AgentSection />
       <OriginStory />
       <FinalCTA />
       <Footer />

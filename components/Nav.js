@@ -38,6 +38,7 @@ export default function Nav() {
         </div>
         <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
           <a href="#features" style={{ fontSize: 14, color: 'var(--text-soft)', fontWeight: 500 }}>Features</a>
+          <a href="#agents" style={{ fontSize: 14, color: 'var(--text-soft)', fontWeight: 500 }}>For Agents</a>
           <a href="#how" style={{ fontSize: 14, color: 'var(--text-soft)', fontWeight: 500 }}>How It Works</a>
           <a href="#waitlist" style={{
             fontSize: 13, fontWeight: 600, color: '#fff',
