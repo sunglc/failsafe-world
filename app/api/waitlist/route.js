@@ -52,6 +52,19 @@ export async function POST(request) {
 
     // Always log to console as backup
     console.log(`[WAITLIST] ${new Date().toISOString()} — ${cleanEmail}`)
+
+    // Feishu notification
+    const feishuWebhook = 'https://open.feishu.cn/open-apis/bot/v2/hook/b2ba3c64-53fd-4962-9e65-9da3ca4fce9e'
+    const time = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
+    fetch(feishuWebhook, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        msg_type: 'text',
+        content: { text: `📬 新的 Waitlist 注册\n邮箱：${cleanEmail}\n时间：${time}` }
+      })
+    }).catch(err => console.error('[FEISHU ERROR]', err))
+
     return NextResponse.json({ success: true })
 
   } catch (error) {
