@@ -2,248 +2,202 @@
 import { useState } from 'react'
 import WaitlistForm from './WaitlistForm'
 
-const USE_CASES = [
-  { id: 'agents', icon: '🤖', label: 'AI Agents', color: '#635BFF' },
-  { id: 'founders', icon: '🚀', label: 'Founders', color: '#FF5C5C' },
-  { id: 'teams', icon: '👥', label: 'Teams', color: '#FFB347' },
-]
-
-const HEADLINES = {
-  agents: {
-    line1: 'Your agents run on',
-    highlight: '50+ credentials.',
-    line2: 'We make sure they never break.',
+const AUDIENCES = [
+  {
+    id: 'agents',
+    icon: '🤖',
+    label: 'AI Agents',
+    headline: <>Your agents run on<br /><span style={{ color: 'var(--accent)' }}>50+ credentials.</span><br />We make sure they never break.</>,
     desc: 'Failsafe monitors every API key, OAuth token, and session your agents depend on. When a credential expires, gets revoked, or a platform goes down — we auto-failover to backup paths in milliseconds. Zero downtime. Zero manual intervention.',
+    features: [
+      { icon: '🔑', text: 'Credential health monitoring across all agents' },
+      { icon: '🔀', text: 'Auto-failover to backup auth paths in <200ms' },
+      { icon: '📡', text: 'Agent dependency graph visualization' },
+      { icon: '🔄', text: 'Zero-downtime credential rotation' },
+    ],
+    tagline: 'Your agents stay online even when platforms go down',
+    badge: 'AI AGENTS',
   },
-  founders: {
-    line1: 'Your startup runs on',
-    highlight: 'one Google account.',
-    line2: "We make sure that's not a death sentence.",
-    desc: 'Failsafe maps every service tied to your identity, scores your platform dependency risk, and continuously backs up your critical data. When a platform bans you — recovery takes minutes, not weeks.',
+  {
+    id: 'founders',
+    icon: '🚀',
+    label: 'Founders',
+    headline: <>Your startup runs on<br /><span style={{ color: 'var(--accent)' }}>one Google account.</span><br />What if it disappears tomorrow?</>,
+    desc: 'Failsafe maps every service tied to your identity, quantifies your platform dependency risk, and continuously backs up what matters. When a ban hits, recovery takes minutes — not weeks of scrambling.',
+    features: [
+      { icon: '💥', text: 'Blast radius map for every identity provider' },
+      { icon: '📊', text: 'Platform dependency risk score + action plan' },
+      { icon: '🔐', text: 'Continuous backup to storage you control' },
+      { icon: '⚡', text: 'One-click migration when disaster strikes' },
+    ],
+    tagline: 'No single platform can shut down your business',
+    badge: 'FOUNDERS',
   },
-  teams: {
-    line1: 'Your team shares',
-    highlight: 'one identity chain.',
-    line2: "We make sure it's unbreakable.",
-    desc: "One admin account controls your Vercel, Stripe, GitHub, and Slack. If that account gets compromised or banned, your entire team is locked out. Failsafe adds redundancy to your identity layer — so no single point of failure can stop your business.",
+  {
+    id: 'indie',
+    icon: '👨‍💻',
+    label: 'Indie Devs',
+    headline: <>You build alone.<br /><span style={{ color: 'var(--accent)' }}>You can't afford downtime.</span><br />We've got your back.</>,
+    desc: 'No IT department. No backup admin. Just you and your stack. Failsafe protects indie developers by scanning your OAuth chains, backing up critical data, and making sure one platform ban doesn\'t erase years of work.',
+    features: [
+      { icon: '🔍', text: 'Scan every OAuth connection in 2 minutes' },
+      { icon: '🛡️', text: 'Automatic backup of code, docs, and configs' },
+      { icon: '🔔', text: 'Alerts when tokens expire or risk score rises' },
+      { icon: '💾', text: 'Self-sovereign storage — your data, your servers' },
+    ],
+    tagline: 'Ship with confidence knowing your stack is protected',
+    badge: 'INDIE DEVS',
   },
-}
-
-const CAPABILITIES = {
-  agents: [
-    { icon: '🔑', text: 'Credential health monitoring across all agents' },
-    { icon: '🔀', text: 'Auto-failover to backup auth paths in <200ms' },
-    { icon: '📡', text: 'Agent dependency graph visualization' },
-    { icon: '🔄', text: 'Zero-downtime credential rotation' },
-  ],
-  founders: [
-    { icon: '🔍', text: 'Scan your OAuth dependencies in 2 minutes' },
-    { icon: '📊', text: 'Get a quantified risk score + action plan' },
-    { icon: '💾', text: 'Continuous backup to storage you control' },
-    { icon: '⚡', text: 'One-click migration when disaster strikes' },
-  ],
-  teams: [
-    { icon: '🛡️', text: 'Multi-member identity redundancy' },
-    { icon: '🔔', text: 'Real-time alerts on credential anomalies' },
-    { icon: '📋', text: 'Team dependency audit dashboard' },
-    { icon: '🔐', text: 'Shared credential vault with failover' },
-  ],
-}
-
-const BOTTOM_STATS = {
-  agents: '→ Your agents stay online even when platforms go down',
-  founders: '→ 73% of founders depend on a single identity provider',
-  teams: '→ One admin ban = entire team locked out of every tool',
-}
+  {
+    id: 'teams',
+    icon: '👥',
+    label: 'Teams',
+    headline: <>Your team shares<br /><span style={{ color: 'var(--accent)' }}>one set of credentials.</span><br />That's a single point of failure.</>,
+    desc: 'Small teams share OAuth logins, API keys, and admin accounts across members. If the wrong person\'s account gets banned, the whole team loses access. Failsafe maps team-wide dependencies and ensures redundancy across every critical service.',
+    features: [
+      { icon: '👤', text: 'Multi-member dependency mapping' },
+      { icon: '🔑', text: 'Shared credential health dashboard' },
+      { icon: '🚨', text: 'Instant alerts when team access is at risk' },
+      { icon: '🔄', text: 'Seamless ownership transfer on account loss' },
+    ],
+    tagline: 'Keep your team operational no matter what happens',
+    badge: 'TEAMS',
+  },
+]
 
 export default function Hero() {
   const [activeId, setActiveId] = useState('agents')
-  const headline = HEADLINES[activeId]
-  const caps = CAPABILITIES[activeId]
-  const activeUseCase = USE_CASES.find(u => u.id === activeId)
+  const active = AUDIENCES.find(a => a.id === activeId)
 
   return (
     <section style={{
-      paddingTop: 130, paddingBottom: 90,
-      background: 'linear-gradient(180deg, #0A2540 0%, #0d1f35 100%)',
-      position: 'relative',
-      overflow: 'hidden',
+      paddingTop: 140, paddingBottom: 80,
+      background: 'linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 100%)',
     }}>
-      {/* Subtle grid background */}
-      <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-        backgroundImage: 'linear-gradient(rgba(99,91,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(99,91,255,0.03) 1px, transparent 1px)',
-        backgroundSize: '60px 60px',
-        pointerEvents: 'none',
-      }} />
+      <div style={{ maxWidth: 1140, margin: '0 auto', padding: '0 32px' }}>
 
-      <div style={{ maxWidth: 1140, margin: '0 auto', padding: '0 32px', position: 'relative' }}>
-
-        {/* Use case tabs */}
+        {/* Audience tabs */}
         <div style={{
-          display: 'flex', gap: 8, marginBottom: 48, justifyContent: 'center',
-          flexWrap: 'wrap',
+          display: 'flex', justifyContent: 'center', gap: 10,
+          marginBottom: 48, flexWrap: 'wrap',
         }}>
-          {USE_CASES.map(uc => (
+          {AUDIENCES.map(a => (
             <button
-              key={uc.id}
-              onClick={() => setActiveId(uc.id)}
+              key={a.id}
+              onClick={() => setActiveId(a.id)}
               style={{
-                background: activeId === uc.id ? uc.color + '20' : 'rgba(255,255,255,0.05)',
-                border: '1.5px solid ' + (activeId === uc.id ? uc.color : 'rgba(255,255,255,0.1)'),
-                borderRadius: 24,
-                padding: '10px 20px',
-                cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: 8,
+                background: activeId === a.id ? 'var(--accent)' : 'transparent',
+                color: activeId === a.id ? '#fff' : 'var(--text-soft)',
+                border: `1.5px solid ${activeId === a.id ? 'var(--accent)' : 'var(--border)'}`,
+                borderRadius: 24, padding: '10px 22px',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
+                fontSize: 14, fontWeight: 600,
                 transition: 'all 0.25s ease',
                 fontFamily: 'inherit',
               }}
             >
-              <span style={{ fontSize: 16 }}>{uc.icon}</span>
-              <span style={{
-                fontSize: 14, fontWeight: 600,
-                color: activeId === uc.id ? uc.color : 'rgba(255,255,255,0.5)',
-              }}>{uc.label}</span>
+              <span style={{ fontSize: 16 }}>{a.icon}</span>
+              {a.label}
             </button>
           ))}
         </div>
 
-        {/* Main content */}
-        <div style={{ display: 'flex', gap: 60, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 48, alignItems: 'flex-start', flexWrap: 'wrap' }}>
 
-          {/* Left - headline */}
-          <div style={{ flex: '1 1 500px', minWidth: 320 }}>
+          {/* Left */}
+          <div style={{ flex: '1 1 480px', minWidth: 320 }}>
             <h1
               key={activeId}
               style={{
-                fontSize: 'clamp(32px, 4.5vw, 52px)',
+                fontSize: 'clamp(32px, 4.5vw, 48px)',
                 fontWeight: 800, lineHeight: 1.15,
-                color: '#fff', margin: '0 0 24px',
-                letterSpacing: '-1.5px',
-                animation: 'fadeUp 0.4s ease',
+                color: 'var(--primary)', margin: '0 0 24px',
+                letterSpacing: '-1.2px',
+                animation: 'fadeUp 0.4s ease both',
               }}
             >
-              {headline.line1}
-              <br />
-              <span style={{ color: activeUseCase.color }}>{headline.highlight}</span>
-              <br />
-              <span style={{ fontSize: 'clamp(24px, 3.5vw, 38px)', color: 'rgba(255,255,255,0.85)' }}>
-                {headline.line2}
-              </span>
+              {active.headline}
             </h1>
 
             <p
-              key={'desc-' + activeId}
+              key={`desc-${activeId}`}
               style={{
-                fontSize: 16, lineHeight: 1.75,
-                color: 'rgba(255,255,255,0.55)',
-                margin: '0 0 36px', maxWidth: 520,
+                fontSize: 16, lineHeight: 1.75, color: 'var(--text-soft)',
+                margin: '0 0 32px', maxWidth: 520,
                 animation: 'fadeUp 0.4s ease 0.1s both',
               }}
             >
-              {headline.desc}
+              {active.desc}
             </p>
 
-            <div style={{ animation: 'fadeUp 0.4s ease 0.2s both' }}>
-              <WaitlistForm dark />
-            </div>
+            <WaitlistForm />
 
-            <p style={{
-              marginTop: 14, fontSize: 12,
-              color: 'rgba(255,255,255,0.3)',
-            }}>
+            <p style={{ marginTop: 14, fontSize: 12, color: 'var(--text-muted)' }}>
               Free dependency scan · No credit card · Works for humans and agents
             </p>
           </div>
 
-          {/* Right - capability cards */}
-          <div style={{ flex: '1 1 400px', minWidth: 300 }}>
-            <div style={{
-              background: 'rgba(255,255,255,0.03)',
+          {/* Right — feature card */}
+          <div
+            key={`card-${activeId}`}
+            style={{
+              flex: '1 1 380px', minWidth: 300,
+              background: 'var(--bg-card)',
               borderRadius: 20,
-              border: '1px solid rgba(255,255,255,0.08)',
+              border: '1px solid var(--border)',
               padding: '28px 24px',
+              boxShadow: '0 20px 60px rgba(10, 37, 64, 0.08)',
+              animation: 'fadeUp 0.4s ease 0.15s both',
+            }}
+          >
+            <div style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              marginBottom: 20,
             }}>
-              <div style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                marginBottom: 24,
-              }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}>
-                  What Failsafe does
-                </span>
-                <span style={{
-                  fontSize: 11, fontWeight: 700, color: activeUseCase.color,
-                  background: activeUseCase.color + '15',
-                  padding: '4px 10px', borderRadius: 6,
-                  textTransform: 'uppercase', letterSpacing: '0.5px',
-                }}>
-                  {activeUseCase.label}
-                </span>
-              </div>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--primary)' }}>
+                What Failsafe does
+              </span>
+              <span style={{
+                fontSize: 10, fontWeight: 700, color: 'var(--accent)',
+                background: 'rgba(99, 91, 255, 0.08)',
+                padding: '4px 10px', borderRadius: 6,
+                textTransform: 'uppercase', letterSpacing: '0.5px',
+              }}>{active.badge}</span>
+            </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {caps.map((cap, i) => (
-                  <div
-                    key={activeId + '-' + i}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 14,
-                      padding: '14px 16px',
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid rgba(255,255,255,0.06)',
-                      borderRadius: 12,
-                      animation: 'fadeUp 0.4s ease both',
-                      animationDelay: (i * 0.08) + 's',
-                    }}
-                  >
-                    <span style={{ fontSize: 20, minWidth: 28 }}>{cap.icon}</span>
-                    <span style={{
-                      fontSize: 14, fontWeight: 500,
-                      color: 'rgba(255,255,255,0.75)',
-                    }}>
-                      {cap.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {active.features.map((f, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 14,
+                    padding: '14px 16px',
+                    background: 'var(--bg-soft)',
+                    borderRadius: 12,
+                    animation: 'fadeUp 0.35s ease both',
+                    animationDelay: `${0.2 + i * 0.08}s`,
+                  }}
+                >
+                  <span style={{ fontSize: 18 }}>{f.icon}</span>
+                  <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>
+                    {f.text}
+                  </span>
+                </div>
+              ))}
+            </div>
 
-              <div style={{
-                marginTop: 20, padding: '14px 16px',
-                background: activeUseCase.color + '08',
-                border: '1px solid ' + activeUseCase.color + '20',
-                borderRadius: 12,
-                textAlign: 'center',
-              }}>
-                <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>
-                  {BOTTOM_STATS[activeId]}
-                </span>
-              </div>
+            <div style={{
+              marginTop: 16, padding: '12px 16px',
+              background: 'rgba(0, 212, 170, 0.06)',
+              border: '1px solid rgba(0, 212, 170, 0.15)',
+              borderRadius: 10,
+              fontSize: 13, fontWeight: 600, color: 'var(--green-dark)',
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}>
+              <span>→</span>
+              {active.tagline}
             </div>
           </div>
-        </div>
-
-        {/* Trust bar */}
-        <div style={{
-          marginTop: 64, paddingTop: 32,
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-          display: 'flex', justifyContent: 'center', gap: 40,
-          flexWrap: 'wrap',
-        }}>
-          {[
-            { label: 'Credentials Monitored', value: 'API Keys · OAuth · Sessions' },
-            { label: 'Platforms Covered', value: 'Google · GitHub · AWS · Stripe · more' },
-            { label: 'Recovery Time', value: 'Minutes, not weeks' },
-          ].map((item, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <div style={{
-                fontSize: 12, color: 'rgba(255,255,255,0.3)',
-                textTransform: 'uppercase', letterSpacing: '0.5px',
-                marginBottom: 6,
-              }}>{item.label}</div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>
-                {item.value}
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </section>
